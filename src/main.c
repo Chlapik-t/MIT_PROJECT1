@@ -17,8 +17,10 @@ void init(void)
 
     //GPIO_Init(GPIO_MODE_OUT_OD_LOW_SLOW);
     GPIO_Init(GPIOE,GPIO_PIN_0,GPIO_MODE_OUT_OD_LOW_SLOW); //D2
-    GPIO_Init(GPIOD,GPIO_PIN_1,GPIO_MODE_IN_PU_IT);        //D7
     GPIO_Init(GPIOD,GPIO_PIN_3,GPIO_MODE_OUT_PP_LOW_SLOW); //D8
+
+    GPIO_Init(GPIOD,GPIO_PIN_1,GPIO_MODE_IN_PU_IT);        //D7         DHT22
+    GPIO_Init(GPIOG,GPIO_PIN_0,GPIO_MODE_IN_PU_IT);        //D4         DHT11
 
     EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOD, EXTI_SENSITIVITY_FALL_ONLY);     // nastavení priority přerušení     
     ITC_SetSoftwarePriority(ITC_IRQ_PORTD, ITC_PRIORITYLEVEL_1);     // povolení přeruření     
