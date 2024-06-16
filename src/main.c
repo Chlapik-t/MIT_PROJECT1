@@ -8,7 +8,7 @@
 typedef enum {NONE, START, READ} state_t;
 state_t stav = NONE;
 
-uint16_t index = 0;
+
 uint16_t last_counter = 0;
 uint64_t data = 0;
 
@@ -18,7 +18,8 @@ void init(void) {
     // Piny
     GPIO_Init(GPIOE, GPIO_PIN_0, GPIO_MODE_IN_PU_IT); // DATA in PIN
     GPIO_Init(GPIOG, GPIO_PIN_0, GPIO_MODE_OUT_OD_HIZ_SLOW); // Trigger
-    GPIO_Init(BTN_PORT, BTN_PIN, GPIO_MODE_IN_FL_NO_IT);
+    GPIO_Init(BTN_PORT, BTN_PIN, GPIO_MODE_IN_FL_NO_IT);       // Tlačítko
+    GPIO_Init(GPIOD,GPIO_PIN_3,GPIO_MODE_OUT_PP_LOW_SLOW);  //Signalizace
 
     // Interupty
     EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOE, EXTI_SENSITIVITY_RISE_FALL);
@@ -31,15 +32,6 @@ void init(void) {
 
     // UART
     init_uart1();
-
-    UART1_DeInit();
-    UART1_Init(9600, 
-               UART1_WORDLENGTH_8D, 
-               UART1_STOPBITS_1,
-               UART1_PARITY_NO, 
-               UART1_SYNCMODE_CLOCK_DISABLE, 
-               UART1_MODE_TXRX_ENABLE); 
-
     init_milis();
 }
 
@@ -50,9 +42,9 @@ int main(void) {
     uint8_t i = 0;
 
     init();
-
+    printf("UART test ");
     while (1) {
-        if ((milis() - time) > 10000 && !PUSH(BTN)) {
+        if ((milis() - time) > 5000 ) {
             time = milis();
             TIM4_GetCounter();
             stav = START;
@@ -67,7 +59,6 @@ int main(void) {
                 poslední = milis();
                 TIM4_SetCounter(0);
                 last_counter = 0;
-                index = 0;
                 data = 0LL;
                 GPIO_WriteHigh(GPIOG, GPIO_PIN_0);
                 stav = READ;
@@ -75,12 +66,12 @@ int main(void) {
         } else if (stav == READ) {
             while (j) {
                 if (data & j) {
-                    putchar('1');
+                    printf("1");
                 } else {
-                    putchar('0');
+                    printf("0");
                 }
                 if (++i % 8 == 0) {
-                    putchar(' ');
+                    printf(" ");
                 }
                 j >>= 1;
             }
@@ -95,11 +86,15 @@ int main(void) {
 
             printf("data: 0x %02X %02X %02X %02X\n", RH_H, RH_L, temp_H, temp_L);
             printf("vlhkost: %d %%, teplota: %d.%d °C\n", RH_H, temp_H, temp_L);
-
             stav = NONE;
+            if (temp_H >25){
+            GPIO_WriteHigh(GPIOD,GPIO_PIN_3);
+        } else {
+            GPIO_WriteLow(GPIOD,GPIO_PIN_3);
         }
+        }
+       
     }
-
     return 0;
 }
 
