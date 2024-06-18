@@ -2,6 +2,12 @@
 #define _MAIN_H_ 1
 
 
+
+#define PULSE_PORT GPIOE
+#define PULSE_PIN GPIO_PIN_0
+#define DATA_PORT GPIOG
+#define DATA_PIN GPIO_PIN_0
+
 #define LOW(BAGR) GPIO_WriteLow(BAGR##_PORT, BAGR##_PIN)
 #define HIGH(BAGR) GPIO_WriteHigh(BAGR##_PORT, BAGR##_PIN)
 #define REVERSE(BAGR) GPIO_WriteReverse(BAGR##_PORT, BAGR##_PIN)
@@ -41,3 +47,4 @@
 void init(void);
 
 #endif // !_MAIN_H_
+
