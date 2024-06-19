@@ -20,7 +20,7 @@ void initialize_system(void) {
     GPIO_Init(PULSE_PORT, PULSE_PIN, GPIO_MODE_OUT_OD_HIZ_SLOW);    // Zapínací pulse
     GPIO_Init(GPIOD, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_SLOW);        // prozátím LED později sepínání relé
 
-    EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOE, EXTI_SENSITIVITY_RISE_FALL);
+    EXTI_SetExtIntSensitivity(EXTI_PORT_GPIOB, EXTI_SENSITIVITY_RISE_FALL);
     ITC_SetSoftwarePriority(ITC_IRQ_PORTE, ITC_PRIORITYLEVEL_1);
     
     TIM2_TimeBaseInit(TIM2_PRESCALER_16, 0xFFFF);
@@ -71,15 +71,15 @@ int main(void) {
 
                     uint64_t m = 1LL << 39;
                     uint8_t i = 0;
-                    while (m) {
+                    {
                       if (data & m) {
                         putchar('1');
                     } else {
                         putchar('0');
                     }
-                    if (++i % 8 == 0){
+                    if (++i % 8 == 0)
                         putchar(' ');
-                    }
+                    
                     m >>=1;
                     }
                     printf("\n");

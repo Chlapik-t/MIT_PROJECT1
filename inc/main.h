@@ -3,10 +3,10 @@
 
 
 
-#define PULSE_PORT GPIOE
-#define PULSE_PIN GPIO_PIN_0
-#define DATA_PORT GPIOG
-#define DATA_PIN GPIO_PIN_0
+#define PULSE_PORT GPIOB
+#define PULSE_PIN GPIO_PIN_4
+#define DATA_PORT GPIOB
+#define DATA_PIN GPIO_PIN_5
 
 #define LOW(BAGR) GPIO_WriteLow(BAGR##_PORT, BAGR##_PIN)
 #define HIGH(BAGR) GPIO_WriteHigh(BAGR##_PORT, BAGR##_PIN)

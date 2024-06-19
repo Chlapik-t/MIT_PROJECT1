@@ -29,6 +29,9 @@
 #ifndef __STM8S_IT_H
 #define __STM8S_IT_H
 
+#define DATA_PORT GPIOB
+#define DATA_PIN GPIO_PIN_5
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm8s.h"
 

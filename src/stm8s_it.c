@@ -29,6 +29,7 @@
 #include "stm8s_it.h"
 
 #include "milis.h"
+#include "main.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -121,12 +122,37 @@ INTERRUPT_HANDLER(EXTI_PORTA_IRQHandler, 3)
   * @param  None
   * @retval None
   */
+
+// natáhnu proměnné z modulu main
+
+extern uint64_t data;
+extern uint16_t previous_counter;
+
+
+// tato funkce se spouští při vzestupné i sestupné hraně datového pinu DHT11
 INTERRUPT_HANDLER(EXTI_PORTB_IRQHandler, 4)
 {
-  /* In order to detect unexpected events during development,
-     it is recommended to set a breakpoint on the following instruction.
-  */
+    uint16_t pulse_length;
+
+    // při každé hraně si poznamenám čas
+    pulse_length = TIM2_GetCounter() - previous_counter;
+    previous_counter = TIM2_GetCounter();  //  uložím si na příští měření
+
+    // při sestupné hraně zjistím, jak dlouhý byl impulz
+    // každý jeden bit ukládám do proměnné data
+    if (READ(DATA) == RESET) { 
+        if (pulse_length > 15 && pulse_length < 30) {   // 0
+            data = data << 1;
+
+        }
+        if (pulse_length > 40 && pulse_length < 74) {   // 1
+            data <<= 1;
+            data = data | 1;
+
+        }
+    }
 }
+
 
 /**
   * @brief  External Interrupt PORTC Interrupt routine
@@ -145,12 +171,12 @@ INTERRUPT_HANDLER(EXTI_PORTC_IRQHandler, 5)
   * @param  None
   * @retval None
   */
-//INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
-//{
+INTERRUPT_HANDLER(EXTI_PORTD_IRQHandler, 6)
+{
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
-//}
+}
 
 /**
   * @brief  External Interrupt PORTE Interrupt routine
